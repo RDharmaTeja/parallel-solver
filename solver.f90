@@ -281,7 +281,7 @@ module solver
             call setup_scheme()
             call link_aliases_solver()
             call initmisc()
-            open(RESNORM_FILE_UNIT, file='resnorms1')
+            open(RESNORM_FILE_UNIT, file='resnorms')
             call checkpoint()  ! Create an initial dump file
 
         end subroutine setup_solver

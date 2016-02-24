@@ -1,9 +1,13 @@
 #!/bin/bash
-echo "$total_process"
+cd buffer
 for (( i = 0; i< $total_process; i++ ))
 do
-folder="buffer/process_0$i/" 
+folder="process_0$i" 
 if [ -d "$folder" ]; then
+rm "$folder"/output*
 else
+mkdir "$folder"
 fi
 done
+
+cd ..

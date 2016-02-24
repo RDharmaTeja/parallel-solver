@@ -1,0 +1,60 @@
+
+##BLOCK LAYOUT FILE
+##===========
+
+## NUMBER OF PROCESSES
+2
+
+## NUMBER OF ENTRIES PER PROCESS
+6
+
+## EACH PROCESS HAVE 6 ENTRIES
+
+## PROCESS 0
+
+## PROCESS ID
+0
+
+## LEFT ID
+## INFLOW -1
+-1
+
+## TOP ID
+## WALL -3
+-3
+
+## RIGHT ID 
+## PROCESS 1
+1
+
+## BOTTOM ID
+-3
+
+## GRID FILE
+process_0.txt
+
+## PROCESS 1
+## ID
+1
+
+## LEFT ID
+0
+## TOP ID
+-3
+## RIGHT ID
+## OUTFLOW
+2
+## BOTTOM ID
+-3
+## GRID
+process_1.txt
+
+
+
+
+
+
+
+
+
+  

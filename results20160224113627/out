@@ -1,0 +1,53 @@
+Compile: 2016/02/24-11/35/57
+Deleting previous executable.
+Processing global.
+Processing utils.
+Processing string.
+Processing grid.
+Processing geometry.
+Processing state.
+Processing ppm.
+Processing muscl.
+Processing face_interpolant.
+Processing van_leer.
+Processing viscous.
+Processing scheme.
+Processing parallel.
+Processing solver.
+
+All modules processed.
+
+Creating compiled file.
+Check correctness of write_interface.py
+
+TODO:
+daemon.py:53:        #TODO: Why are the following two statements required?!?
+muscl.f90:131:                !TODO: Generalise TVD scheme functions
+muscl.f90:177:                !TODO: Generalise TVD scheme functions
+muscl.f90:223:                !TODO: Generalise TVD scheme functions
+parallel_compile.sh:99:    echo 'TODO:' | tee -a $log
+parallel_compile.sh:101:            'TODO' * | tee -a $log
+ppm.f90:127:            !TODO: Vectorize this??
+ppm.f90:218:            !TODO: Vectorize this? Or will it be ugly?
+python_codes/Visit-Related/daemon.py:53:        #TODO: Why are the following two statements required?!?
+python_codes/Visit-Related/vtkwrite.py:6:# TODO: Generalise grid file name 
+python_codes/Visit-Related/visitpostprocessing.py:12:# TODO: Adding subplots made generic
+python_codes/Visit-Related/visitpostprocessing.py:13:# TODO: Is AddPlot('Mesh', 'mesh') generic?
+python_codes/Visit-Related/visdaemon.py:40:            #TODO: Generalize filename (output*.fvtk)
+python_codes/Grid-Related/refinegrid.py:16:# TODO: This code is tested only for 2D and 3D uniform grid.
+python_codes/Grid-Related/visitpostprocessing.py:12:# TODO: Adding subplots made generic
+python_codes/Grid-Related/visitpostprocessing.py:13:# TODO: Is AddPlot('Mesh', 'mesh') generic?
+python_codes/Grid-Related/plotgrid.py:10:# TODO: This code is to be tested only for 2D uniform grid.
+string.f90:19:    !TODO: Implement a reset flag. If this flag is set to true, reset 
+string.f90:79:            !TODO: Add support for width also?
+van_leer.f90:32:    !TODO: Integrate here with boundary condition module
+visdaemon.py:40:            #TODO: Generalize filename (output*.fvtk)
+visitpostprocessing.py:12:# TODO: Adding subplots made generic
+visitpostprocessing.py:13:# TODO: Is AddPlot('Mesh', 'mesh') generic?
+
+Removing generated files.
+
+End of compile script.
+Run: 2016/02/24-11/36/27
+Backing up existing data
+Saving plots of the log files...

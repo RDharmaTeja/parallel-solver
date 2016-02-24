@@ -1,8 +1,1 @@
 
-visdaemon listening for files.
-Running: viewer2.10.0 -noint -host 127.0.0.1 -port 5600
-Translating file output00000.fvtk
-Translating file output00100.fvtk
-Opening database...
-Running: mdserver2.10.0 -host 127.0.0.1 -port 5600
-Running: engine_ser2.10.0 -host 127.0.0.1 -port 5600

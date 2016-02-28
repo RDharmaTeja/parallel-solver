@@ -266,12 +266,17 @@ module solver
             character(len=FILE_NAME_LENGTH) :: state_load_file
             
             call dmsg(1, 'solver', 'setup_solver')            
+            
+            ! parallel calls start
             call get_process_data()
-            print *, "process id is",process_id            
-
+            call read_layout_file(process_id)
+            !print *,"process id is",process_id,left_id,top_id,right_id,bottom_id,back_id,front_id,grid_file_name            
+			
+			! parallel calls ends
             call read_config_file(free_stream_density, free_stream_x_speed, &
                     free_stream_y_speed, free_stream_z_speed, &
-                    free_stream_pressure, grid_file, state_load_file)
+                    free_stream_pressure, grid_file, state_load_file)      
+            grid_file = grid_file_buf ! changing file name 
             call setup_grid(grid_file)
             call setup_geometry()
             call setup_state(free_stream_density, free_stream_x_speed, &

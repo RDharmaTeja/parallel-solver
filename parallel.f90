@@ -8,8 +8,8 @@ module parallel
 
   ! process layout
   integer,public :: total_process,total_entries,process_id, &
-       left_id,top_id,right_id,bottom_id
-  character(len=FILE_NAME_LENGTH) :: grid_file_name
+       left_id,top_id,right_id,bottom_id,back_id,front_id
+  character(len=FILE_NAME_LENGTH) :: grid_file_buf
   
   public :: get_next_token_parallel
   public :: read_layout_file
@@ -73,7 +73,7 @@ end subroutine get_process_data
     character(len=STRING_BUFFER_LENGTH) :: buf
     integer,intent(in)::process_id
     integer :: j,i 
-    call dmsg(1, 'solver', 'read_layout_file')
+    call dmsg(1, 'parallel', 'read_layout_file')
 
     open(CONFIG_FILE_UNIT, file=layout_file)
 
@@ -99,7 +99,11 @@ end subroutine get_process_data
     call get_next_token_parallel(buf)
     read(buf,*)bottom_id
     call get_next_token_parallel(buf)
-    read(buf,*) grid_file_name         
+    read(buf,*)back_id
+    call get_next_token_parallel(buf)
+    read(buf,*)front_id
+    call get_next_token_parallel(buf)
+    read(buf,*) grid_file_buf         
     !call dmsg(5, 'solver', 'read_config_file', &
     !        msg='scheme_name = ' + scheme_name)
   end subroutine read_layout_file

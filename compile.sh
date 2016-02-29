@@ -39,6 +39,7 @@ filelist="
     string
     grid
     geometry
+    parallel
     state
     ppm
     muscl
@@ -46,7 +47,6 @@ filelist="
     van_leer
     viscous
     scheme
-    parallel
     solver
 "
 

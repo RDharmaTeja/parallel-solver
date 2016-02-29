@@ -270,8 +270,8 @@ module solver
             ! parallel calls start
             call get_process_data()
             call read_layout_file(process_id)
-            !print *,"process id is",process_id,left_id,top_id,right_id,bottom_id,back_id,front_id,grid_file_name            
-			
+            !print *,"process id is",process_id,left_id,top_id,right_id,bottom_id,back_id,front_id,grid_file_name
+            
 			! parallel calls ends
             call read_config_file(free_stream_density, free_stream_x_speed, &
                     free_stream_y_speed, free_stream_z_speed, &
@@ -283,6 +283,7 @@ module solver
                     free_stream_y_speed, free_stream_z_speed, &
                     free_stream_pressure, state_load_file)
             call allocate_memory()
+            call allocate_buffer_cells() ! parallel buffers
             call setup_scheme()
             call link_aliases_solver()
             call initmisc()
@@ -904,7 +905,6 @@ module solver
             implicit none
             
             call dmsg(1, 'solver', 'step')
-
             call set_ghost_cell_data()
             call compute_residue()
             call dmsg(1, 'solver', 'step', 'Residue computed.')

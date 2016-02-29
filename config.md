@@ -22,14 +22,14 @@ none
 1e-6
 
 ## Grid file
-Rchannel-3D-2.txt
+process_1.txt
 
 ## State Load File ('~' for no load file)
 ##state.fvtk
 ~
 
 ## Max Iterations
-60000
+1000
 
 ## Checkpoint iter (dump data after how many iterations)
 ### (Enter 0 to turn checkpointing off)

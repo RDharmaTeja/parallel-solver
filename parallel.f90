@@ -4,26 +4,54 @@ module parallel
   use global, only: CONFIG_FILE_UNIT, RESNORM_FILE_UNIT, FILE_NAME_LENGTH, &
        STRING_BUFFER_LENGTH, INTERPOLANT_NAME_LENGTH
   use utils, only: alloc, dealloc, dmsg, DEBUG_LEVEL
+  use grid 
   implicit none
 
   ! process layout
   integer,public :: total_process,total_entries,process_id, &
        left_id,top_id,right_id,bottom_id,back_id,front_id
   character(len=FILE_NAME_LENGTH) :: grid_file_buf
-  
+  real, public, dimension(:),allocatable :: left_send_buf,left_recv_buf,&
+  top_send_buf,top_recv_buf,right_send_buf,right_recv_buf, &
+       bottom_send_buf,bottom_recv_buf,front_send_buf,front_recv_buf,&
+       back_send_buf,back_recv_buf
   public :: get_next_token_parallel
   public :: read_layout_file
   public :: get_process_data
 
 contains
 
-subroutine get_process_data()
-! finds process data
-integer :: ierr
-call MPI_COMM_RANK(MPI_COMM_WORLD,process_id,ierr)
-call MPI_COMM_SIZE(MPI_COMM_WORLD,total_process,ierr)
 
-end subroutine get_process_data
+  subroutine allocate_buffer_cells()
+  implicit none
+  integer :: buf
+  call dmsg(1, 'parallel', 'allocating buffer cells for MP')  
+  !left buffer jmx+1 * kmx + 1 * (dens, x , y, z speeds, pressure)
+  
+  buf = (jmx+1)*(kmx+1)*5
+  call alloc(left_send_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable left_buf.')
+  call alloc(right_send_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable right_buf.')
+  call alloc(left_recv_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable left_buf.')
+  call alloc(right_recv_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable right_buf.')                      
+  end subroutine allocate_buffer_cells
+  
+
+  subroutine get_process_data()
+  implicit none
+    ! finds process data
+    integer :: ierr
+    call MPI_COMM_RANK(MPI_COMM_WORLD,process_id,ierr)
+    call MPI_COMM_SIZE(MPI_COMM_WORLD,total_process,ierr)
+
+  end subroutine get_process_data
 
   subroutine get_next_token_parallel(buf)
     !-----------------------------------------------------------

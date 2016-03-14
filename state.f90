@@ -196,6 +196,7 @@ contains
        do k = 0, kmx
           do j = 0, jmx
              left_send_buf(count) = x_speed(1,j,k)
+             !print *, "left send -  ", process_id ,j,k,count,left_send_buf(count)
              count = count+1
           end do
        end do
@@ -215,19 +216,30 @@ contains
        !print *,"count is ", count 
        ! send message to left process
        buf = (jmx+1)*(kmx+1)*5
-       call MPI_SEND(left_send_buf,buf,MPI_REAL,left_id,1,MPI_COMM_WORLD, ierr)
-       call MPI_RECV(left_recv_buf,buf,MPI_REAL,left_id,1,MPI_COMM_WORLD,status,ierr)
+       
+       !do k = 1, buf
+       !print *,'left send - ', process_id, k ,left_send_buf(k)
+       !end do
+       
+       call MPI_SEND(left_send_buf,2*buf,MPI_REAL,left_id,1,MPI_COMM_WORLD, ierr)
+       call MPI_RECV(left_recv_buf,2*buf,MPI_REAL,left_id,1,MPI_COMM_WORLD,status,ierr)
        ! updating solution
+       !do k = 1, buf
+       !print *,'left recv - ', process_id, k ,left_recv_buf(k)
+       !end do
+       
        count = 1
        do k = 0, kmx
           do j = 0, jmx
               density(0,j,k) = left_recv_buf(count)
+               
              count = count+1
           end do
        end do
        do k = 0, kmx
           do j = 0, jmx
              pressure(0,j,k) = left_recv_buf(count)
+             
             ! print *, "left recv- ", pressure(0,j,k)
              count = count+1
           end do
@@ -235,6 +247,7 @@ contains
        do k = 0, kmx
           do j = 0, jmx
              x_speed(0,j,k) = left_recv_buf(count)
+             
              count = count+1
           end do
        end do
@@ -249,10 +262,9 @@ contains
              z_speed(0,j,k) = left_recv_buf(count)
              count = count+1
           end do
-       end do
-
-                     
+       end do                    
     end if
+    
 
     if(top_id >= 0) then 
        !print *,"top id is ", process_id,top_id
@@ -261,8 +273,10 @@ contains
     if(right_id >= 0) then
        !print *,"right id is ", process_id,right_id
        buf = (jmx+1)*(kmx+1)*5
-       call MPI_RECV(right_recv_buf,buf,MPI_REAL,right_id,1,MPI_COMM_WORLD,status,ierr)
+       call MPI_RECV(right_recv_buf,2*buf,MPI_REAL,right_id,1,MPI_COMM_WORLD,status,ierr)
        ! updating solution
+      
+       
        count = 1
        do k = 0, kmx
           do j = 0, jmx
@@ -279,6 +293,7 @@ contains
        do k = 0, kmx
           do j = 0, jmx
              x_speed(imx,j,k) = right_recv_buf(count)
+             !print *, "right recv -  ", process_id ,j,k,count,right_recv_buf(count)
              count = count+1
           end do
        end do
@@ -314,6 +329,7 @@ contains
        do k = 0, kmx
           do j = 0, jmx
              right_send_buf(count) = x_speed(imx-1,j,k)
+             
              count = count+1
           end do
        end do
@@ -329,8 +345,11 @@ contains
              count = count+1
           end do
        end do
-
-       call MPI_SEND(right_send_buf,buf,MPI_REAL,right_id,1,MPI_COMM_WORLD, ierr)
+       !do k = 1, buf
+       !print *,'right send - ', process_id, k ,right_send_buf(k)
+       !end do
+       print *, "total size is", buf 
+       call MPI_SEND(right_send_buf,2*buf,MPI_REAL,right_id,1,MPI_COMM_WORLD, ierr)
     
     end if
 

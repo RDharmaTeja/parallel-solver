@@ -171,7 +171,12 @@ contains
   end subroutine destroy_state
   
   
-  subroutine send_recv_interface()
+  subroutine send_recv_interface_lr()
+      !-----------------------------------------------------------
+    !send and receive data left and right 
+    ! i.e along flow direction 
+    !-----------------------------------------------------------
+
     implicit none
     integer :: j,k,count =1
     integer :: ierr,buf
@@ -212,22 +217,18 @@ contains
              count = count+1
           end do
        end do
-
        !print *,"count is ", count 
        ! send message to left process
-       buf = (jmx+1)*(kmx+1)*5
-       
+       buf = (jmx+1)*(kmx+1)*5       
        !do k = 1, buf
        !print *,'left send - ', process_id, k ,left_send_buf(k)
-       !end do
-       
-       call MPI_SEND(left_send_buf,2*buf,MPI_REAL,left_id,1,MPI_COMM_WORLD, ierr)
-       call MPI_RECV(left_recv_buf,2*buf,MPI_REAL,left_id,1,MPI_COMM_WORLD,status,ierr)
+       !end do       
+       call MPI_SEND(left_send_buf,buf,MPI_DOUBLE_PRECISION,left_id,1,MPI_COMM_WORLD, ierr)
+       call MPI_RECV(left_recv_buf,buf,MPI_DOUBLE_PRECISION,left_id,1,MPI_COMM_WORLD,status,ierr)
        ! updating solution
        !do k = 1, buf
        !print *,'left recv - ', process_id, k ,left_recv_buf(k)
-       !end do
-       
+       !end do       
        count = 1
        do k = 0, kmx
           do j = 0, jmx
@@ -265,7 +266,6 @@ contains
        end do                    
     end if
     
-
     if(top_id >= 0) then 
        !print *,"top id is ", process_id,top_id
     end if
@@ -273,10 +273,8 @@ contains
     if(right_id >= 0) then
        !print *,"right id is ", process_id,right_id
        buf = (jmx+1)*(kmx+1)*5
-       call MPI_RECV(right_recv_buf,2*buf,MPI_REAL,right_id,1,MPI_COMM_WORLD,status,ierr)
-       ! updating solution
-      
-       
+       call MPI_RECV(right_recv_buf,buf,MPI_DOUBLE_PRECISION,right_id,1,MPI_COMM_WORLD,status,ierr)
+       ! updating solution       
        count = 1
        do k = 0, kmx
           do j = 0, jmx
@@ -309,7 +307,6 @@ contains
              count = count+1
           end do
        end do
-
        ! creating right send  buffer
        count = 1
        do k = 0, kmx
@@ -328,8 +325,7 @@ contains
        end do
        do k = 0, kmx
           do j = 0, jmx
-             right_send_buf(count) = x_speed(imx-1,j,k)
-             
+             right_send_buf(count) = x_speed(imx-1,j,k)             
              count = count+1
           end do
        end do
@@ -348,24 +344,205 @@ contains
        !do k = 1, buf
        !print *,'right send - ', process_id, k ,right_send_buf(k)
        !end do
-       print *, "total size is", buf 
-       call MPI_SEND(right_send_buf,2*buf,MPI_REAL,right_id,1,MPI_COMM_WORLD, ierr)
-    
+       !print *, "total size is", buf 
+       call MPI_SEND(right_send_buf,buf,MPI_DOUBLE_PRECISION,right_id,1,MPI_COMM_WORLD, ierr)    
     end if
 
     if(bottom_id >= 0) then 
-       print *,"bottom id is ", process_id,bottom_id
+       !print *,"bottom id is ", process_id,bottom_id
     end if
 
     if(back_id >= 0) then
-       print *,"back id is ", process_id,back_id
+       !print *,"back id is ", process_id,back_id
     end if
 
     if(front_id >= 0) then
-       print *,"front id is ", process_id,front_id
+       !print *,"front id is ", process_id,front_id
     end if
+    
+  end subroutine send_recv_interface_lr
 
-  end subroutine send_recv_interface
+
+  subroutine send_recv_interface_tb()
+      !-----------------------------------------------------------
+    !send and receive data top and botom 
+    ! i.e along flow direction 
+    !-----------------------------------------------------------
+    implicit none
+    integer :: i,k,count =1
+    integer :: ierr,buf
+    integer :: status(MPI_STATUS_SIZE)
+    call dmsg(1, 'state', 'send recv interface top and bottom')
+    if(top_id >= 0 ) then
+       !print *, "left id is", process_id,left_id
+       ! first send message
+   ! left_send_buf(1) = 10;
+       count = 1
+       do k = 0, kmx
+          do i = 0, imx
+             top_send_buf(count) = density(i,jmx-1,k)
+             count = count+1
+          end do
+       end do
+        do k = 0, kmx
+          do i = 0, imx
+             top_send_buf(count) = pressure(i,jmx-1,k)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             top_send_buf(count) = x_speed(i,jmx-1,k)
+             !print *, "left send -  ", process_id ,j,k,count,left_send_buf(count)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             top_send_buf(count) = y_speed(i,jmx-1,k)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             top_send_buf(count) = z_speed(i,jmx-1,k)
+             count = count+1
+          end do
+       end do
+       !print *,"count is ", count 
+       ! send message to left process
+       buf = (imx+1)*(kmx+1)*5       
+       !do k = 1, buf
+       !print *,'left send - ', process_id, k ,left_send_buf(k)
+       !end do       
+       call MPI_SEND(top_send_buf,buf,MPI_DOUBLE_PRECISION,top_id,1,MPI_COMM_WORLD, ierr)
+       call MPI_RECV(top_recv_buf,buf,MPI_DOUBLE_PRECISION,top_id,1,MPI_COMM_WORLD,status,ierr)
+       ! updating solution
+       !do k = 1, buf
+       !print *,'left recv - ', process_id, k ,left_recv_buf(k)
+       !end do       
+       count = 1
+       do k = 0, kmx
+          do i = 0, imx
+              density(i,jmx,k) = top_recv_buf(count)  
+              !print *, "top recv - den ", process_id,top_recv_buf(count)             
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             pressure(i,jmx,k) = top_recv_buf(count)
+             !print *, "top recv - pres ",process_id, top_recv_buf(count)
+            ! print *, "left recv- ", pressure(0,j,k)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             x_speed(i,jmx,k) = top_recv_buf(count)
+             !print *, "top recv - x ", process_id,top_recv_buf(count)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             y_speed(i,jmx,k) = top_recv_buf(count)
+             !print *, "top recv - y ", process_id,top_recv_buf(count)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             z_speed(i,jmx,k) = top_recv_buf(count)
+             !print *, "top recv - x ", process_id, top_recv_buf(count)
+             count = count+1
+          end do
+       end do
+       
+                           
+    end if
+    
+
+    if(bottom_id >= 0) then
+       !print *,"right id is ", process_id,right_id
+       buf = (imx+1)*(kmx+1)*5
+       call MPI_RECV(bottom_recv_buf,buf,MPI_DOUBLE_PRECISION,bottom_id,1,MPI_COMM_WORLD,status,ierr)
+       ! updating solution 
+             
+       count = 1
+       do k = 0, kmx
+          do i = 0, imx
+              density(i,0,k) = bottom_recv_buf(count)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             pressure(i,0,k) = bottom_recv_buf(count)
+             
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             x_speed(i,0,k) = bottom_recv_buf(count)
+             !print *, "right recv -  ", process_id ,j,k,count,right_recv_buf(count)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             y_speed(i,0,k) = bottom_recv_buf(count)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             z_speed(i,0,k) = bottom_recv_buf(count)
+             count = count+1
+          end do
+       end do
+       ! creating bottom send  buffer
+       count = 1
+       do k = 0, kmx
+          do i = 0, imx
+             bottom_send_buf(count) = density(i,1,k)
+             
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             bottom_send_buf(count) = pressure(i,1,k)
+             !print *, "bottom send - ",process_id, pressure(i,1,k)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             bottom_send_buf(count) = x_speed(i,1,k)             
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             bottom_send_buf(count) = y_speed(i,1,k)
+             count = count+1
+          end do
+       end do
+       do k = 0, kmx
+          do i = 0, imx
+             bottom_send_buf(count) = z_speed(i,1,k)
+             count = count+1
+          end do
+       end do
+       !do k = 1, buf
+       !print *,'right send - ', process_id, k ,right_send_buf(k)
+       !end do
+       !print *, "total size is", buf 
+       call MPI_SEND(bottom_send_buf,buf,MPI_DOUBLE_PRECISION,bottom_id,1,MPI_COMM_WORLD, ierr)    
+    end if
+  end subroutine send_recv_interface_tb
 
   subroutine set_inlet_and_exit_state_variables()
     !-----------------------------------------------------------
@@ -403,7 +580,7 @@ contains
        pressure(imx, :, :) = pressure_inf
        pressure(0, :, :) = pressure(1, :, :)
     end if
-    call send_recv_interface()
+    call send_recv_interface_lr()
     call set_exit_spherical_wall_variables()
 
   end subroutine set_inlet_and_exit_state_variables
@@ -465,14 +642,17 @@ contains
     implicit none
 
     call dmsg(1, 'state', 'set_front_and_back_ghost_cell_data')
-
+    
+    !if (1 == 2) then
     pressure(:, 0, :) = pressure(:, 1, :)
-    pressure(:, jmx, :) = pressure(:, jmx-1, :)
     density(:, 0, :) = density(:, 1, :)
+    pressure(:, jmx, :) = pressure(:, jmx-1, :)    
     density(:, jmx, :) = density(:, jmx-1, :)
-
+    !
     call apply_eta_flow_tangency_conditions()
+    !end if
 
+    
   end subroutine set_front_and_back_ghost_cell_data
 
   subroutine set_top_and_bottom_ghost_cell_data()
@@ -494,7 +674,7 @@ contains
     density(:, :, 0) = density(:, :,  1)
     density(:, :, kmx) = density(:, :, kmx-1)
     call apply_zeta_flow_tangency_conditions()
-
+    
   end subroutine set_top_and_bottom_ghost_cell_data
 
   subroutine apply_eta_flow_tangency_conditions()
@@ -542,7 +722,6 @@ contains
             ynz(1:imx-1, jmx, 1:kmx-1) * ynz(1:imx-1, jmx, 1:kmx-1)) &
             ) &
             )
-
        ! For the front cells
        x_speed(1:imx-1, 0, 1:kmx-1) = x_speed(1:imx-1, 1, 1:kmx-1) - &
             (2. * &
@@ -583,6 +762,7 @@ contains
        y_speed(1:imx-1, 0, 1:kmx-1) = - y_speed(1:imx-1, 1, 1:kmx-1)
        z_speed(1:imx-1, 0, 1:kmx-1) = - z_speed(1:imx-1, 1, 1:kmx-1)
     end if
+    
 
   end subroutine apply_eta_flow_tangency_conditions
 
@@ -598,7 +778,6 @@ contains
     implicit none
 
     call dmsg(1, 'state', 'apply_zeta_flow_tangency_conditions')
-
     ! For the top cells
     x_speed(1:imx-1, 1:jmx-1, kmx) = x_speed(1:imx-1, 1:jmx-1, kmx-1) - &
          (2. * &
@@ -689,7 +868,10 @@ contains
     call set_inlet_and_exit_state_variables()
     call set_front_and_back_ghost_cell_data()
     call set_top_and_bottom_ghost_cell_data()
-
+    !if (1 == 2) then 
+    call send_recv_interface_tb()
+    !end if
+    
   end subroutine set_ghost_cell_data
 
   subroutine init_infinity_values(free_stream_density, &

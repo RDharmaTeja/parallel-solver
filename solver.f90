@@ -268,8 +268,8 @@ module solver
             call dmsg(1, 'solver', 'setup_solver')            
             
             ! parallel calls start
-            call get_process_data()
-            call read_layout_file(process_id)
+            call get_process_data() ! parallel calls
+            call read_layout_file(process_id) ! parallel calls
             !print *,"process id is",process_id,left_id,top_id,right_id,bottom_id,back_id,front_id,grid_file_name
             
 			! parallel calls ends

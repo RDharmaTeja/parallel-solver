@@ -28,7 +28,7 @@ contains
   call dmsg(1, 'parallel', 'allocating buffer cells for MP')  
   !left buffer jmx+1 * kmx + 1 * (dens, x , y, z speeds, pressure)
   
-  buf = (jmx+1)*(kmx+1)*5
+  buf = (jmx+1)*(kmx+1)*5 ! size of buffer cells left - right
   call alloc(left_send_buf, 1,buf, &
                     errmsg='Error: Unable to allocate memory for buffer ' // &
                         'variable left_buf.')
@@ -40,7 +40,23 @@ contains
                         'variable left_buf.')
   call alloc(right_recv_buf, 1,buf, &
                     errmsg='Error: Unable to allocate memory for buffer ' // &
-                        'variable right_buf.')                      
+                        'variable right_buf.')
+  
+  buf = (imx+1)*(kmx+1)*5 ! size of buffer top - bottom
+  call alloc(top_send_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable top_buf.')
+  call alloc(bottom_send_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable bottom_buf.')
+  call alloc(top_recv_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable top_buf.')
+  call alloc(bottom_recv_buf, 1,buf, &
+                    errmsg='Error: Unable to allocate memory for buffer ' // &
+                        'variable bottom_buf.')                     
+                        
+                                              
   end subroutine allocate_buffer_cells
   
 

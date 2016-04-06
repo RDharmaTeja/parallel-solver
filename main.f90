@@ -10,7 +10,7 @@ program main
   call setup_solver()
 
   do while (.not. converged())
-     print *, 'Iteration ', iter
+     !print *, 'Iteration', iter
      call step()
      if (iter == max_iters) then
         exit

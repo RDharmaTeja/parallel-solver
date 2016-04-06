@@ -411,9 +411,13 @@ module van_leer
                 G_plus(1) = y_density_left(i, j, k) * sound_speed_avg * c_plus
                 
                 ! Is convective flux zero anywhere?
-                if ((j .eq. 1) .or. (j .eq. jmx)) then
-                    G_plus(1) = 0.
-                end if
+                
+!                if ((j .eq. 1) .or. (j .eq. jmx)) then
+!                    G_plus(1) = 0.
+!                end if
+                
+                
+                
                 ! Construct other fluxes in terms of the F mass flux
                 G_plus(2) = (G_plus(1) * y_x_speed_left(i, j, k)) + &
                             (scrD_plus * y_pressure_left(i, j, k) * ynx(i, j, k))
@@ -454,9 +458,9 @@ module van_leer
                 G_minus(1) = y_density_right(i, j, k) * sound_speed_avg * c_minus
                 
                 ! Is convective flux zero anywhere?
-                if ((j .eq. 1) .or. (j .eq. jmx)) then
-                    G_minus(1) = 0.
-                end if
+!                if ((j .eq. 1) .or. (j .eq. jmx)) then
+!                   G_minus(1) = 0.
+!                end if
 
                 ! Construct other fluxes in terms of the G mass flux
                 G_minus(2) = (G_minus(1) * y_x_speed_right(i, j, k)) + &
